@@ -1,0 +1,70 @@
+name: Install cacheproof loader
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/install-cacheproof-loader.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve current builder as app.html
+        run: cp index.html app.html
+      - name: Install tiny no-cache root loader
+        run: |
+          cat > index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+            <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+            <meta http-equiv="Pragma" content="no-cache">
+            <meta http-equiv="Expires" content="0">
+            <title>Star Breach Warband Builder</title>
+            <style>
+              html,body{margin:0;min-height:100%;background:#051014;color:#eefcfb;font:16px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+              body{display:grid;place-items:center;min-height:100vh}.loader{opacity:.75;text-align:center;padding:24px}
+            </style>
+          </head>
+          <body>
+            <div class="loader">Loading Star Breach Warband Builder…</div>
+            <script>
+              (async()=>{
+                try{
+                  const stamp=Date.now();
+                  const r=await fetch(`app.html?fresh=${stamp}`,{cache:'no-store'});
+                  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+                  let html=await r.text();
+                  html=html
+                    .replaceAll('v0132-fix.css"',`v0132-fix.css?fresh=${stamp}"`)
+                    .replaceAll('v0132-fix.js"',`v0132-fix.js?fresh=${stamp}"`);
+                  document.open();document.write(html);document.close();
+                }catch(err){
+                  document.body.innerHTML='<div class="loader"><b>Could not load the builder.</b><br>Please try again in a moment.</div>';
+                  console.error(err);
+                }
+              })();
+            </script>
+          </body>
+          </html>
+          HTML
+      - name: Safety checks
+        run: |
+          grep -q 'Star Breach Warband Builder — v0.13.3' app.html
+          ! grep -q '__FROM_LOCAL_FILE_NOT_SUPPORTED__' app.html
+          grep -q 'fetch(`app.html?fresh=${stamp}`' index.html
+      - name: Commit loader
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html app.html
+          git commit -m "Use cacheproof root loader for future builder updates" || exit 0
+          git push
