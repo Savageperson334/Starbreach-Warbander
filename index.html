@@ -21,9 +21,9 @@
         const r=await fetch(`app.html?fresh=${stamp}`,{cache:'no-store'});
         if(!r.ok) throw new Error(`HTTP ${r.status}`);
         let html=await r.text();
-        html=html
-          .replaceAll('v0132-fix.css"',`v0132-fix.css?fresh=${stamp}"`)
-          .replaceAll('v0132-fix.js"',`v0132-fix.js?fresh=${stamp}"`);
+        const css=`<link rel="stylesheet" href="v0134-layout.css?fresh=${stamp}">`;
+        const js=`<script src="v0134-layout.js?fresh=${stamp}"><\/script>`;
+        html=html.replace('</head>',`${css}</head>`).replace('</body>',`${js}</body>`);
         document.open();document.write(html);document.close();
       }catch(err){
         document.body.innerHTML='<div class="loader"><b>Could not load the builder.</b><br>Please try again in a moment.</div>';
