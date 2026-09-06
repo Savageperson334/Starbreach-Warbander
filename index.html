@@ -21,10 +21,9 @@
         const r=await fetch(`app.html?fresh=${stamp}`,{cache:'no-store'});
         if(!r.ok) throw new Error(`HTTP ${r.status}`);
         let html=await r.text();
-        const css=`<link rel="stylesheet" href="v0134-layout.css?fresh=${stamp}">`;
-        const js=`<script src="v0134-layout.js?fresh=${stamp}"><\/script><script src="v0132-fix.js?fresh=${stamp}"><\/script>`;
-        const oldPatch='<script src="v0132-fix.js"><\/script></body>';
-        html=html.replace('</head>',`${css}</head>`).replace(oldPatch,`${js}</body>`);
+        html=html
+          .replace('v0132-fix.css"',`v0132-fix.css?fresh=${stamp}"`)
+          .replace('v0132-fix.js"',`v0132-fix.js?fresh=${stamp}"`);
         document.open();
         document.write(html);
         document.close();
