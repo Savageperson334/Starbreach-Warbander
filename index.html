@@ -11,7 +11,7 @@
     html,body{margin:0;min-height:100%;background:#051014;color:#eefcfb;font:16px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
     body{display:grid;place-items:center;min-height:100vh}.loader{opacity:.75;text-align:center;padding:24px}
   </style>
-</head>
+<link rel="stylesheet" href="v0132-fix.css"></head>
 <body>
   <div class="loader">Loading Star Breach Warband Builder…</div>
   <script>
@@ -23,7 +23,7 @@
         let html=await r.text();
         const css=`<link rel="stylesheet" href="v0134-layout.css?fresh=${stamp}">`;
         const js=`<script src="v0134-layout.js?fresh=${stamp}"><\/script>`;
-        html=html.replace('</head>',`${css}</head>`).replace('</body>',`${js}</body>`);
+        html=html.replace('</head>',`${css}</head>`).replace('<script src="v0132-fix.js"></script></body>',`${js}</body>`);
         document.open();document.write(html);document.close();
       }catch(err){
         document.body.innerHTML='<div class="loader"><b>Could not load the builder.</b><br>Please try again in a moment.</div>';
