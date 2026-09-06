@@ -1,0 +1,44 @@
+name: Apply v0.13.2 UI fixes
+
+on:
+  push:
+    paths:
+      - 'v0132-fix.js'
+      - 'v0132-fix.css'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch index.html
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+          text = text.replace('Star Breach Warband Builder — v0.13.1', 'Star Breach Warband Builder — v0.13.2', 1)
+          text = text.replace('unofficial prototype v0.13.1 • 1st Ed. errata PDF', 'unofficial prototype v0.13.2 • 1st Ed. errata PDF', 1)
+          css = '<link rel="stylesheet" href="v0132-fix.css">'
+          js = '<script src="v0132-fix.js"></script>'
+          if css not in text:
+              text = text.replace('</head>', css + '</head>', 1)
+          if js not in text:
+              text = text.replace('</body>', js + '</body>', 1)
+          p.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit update
+        run: |
+          if git diff --quiet -- index.html; then
+            echo 'index.html already patched'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Apply v0.13.2 UI fixes'
+          git push
