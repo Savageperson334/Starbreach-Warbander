@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Consolidate active UI patches
+      - name: Consolidate active runtime
         shell: bash
         run: |
           set -euo pipefail
@@ -24,8 +24,7 @@ jobs:
           cat v0132-fix.js v0136-roster-add.js v0137-breach-guide.js v0138-breach-guide-bottom.js > starbreach-ui.js
           cat >> starbreach-ui.js <<'JS'
 
-          // Consolidated release label. Earlier patch IIFEs retain their behavior;
-          // this final pass only keeps the displayed version truthful.
+          // Keep the displayed release label aligned with the consolidated runtime.
           (() => {
             document.title = document.title.replace(/v0\.13\.\d+/g, 'v0.13.8');
             document.querySelectorAll('small').forEach(el => {
@@ -95,15 +94,13 @@ jobs:
             v0134-layout.js \
             v0136-roster-add.js \
             v0137-breach-guide.js \
-            v0138-breach-guide-bottom.js \
-            .github/workflows/apply-v0132.yml \
-            .github/workflows/install-cacheproof-loader.yml
+            v0138-breach-guide-bottom.js
 
-      - name: Add documentation and checks
+      - name: Add documentation and local smoke check
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p scripts .github/workflows
+          mkdir -p scripts
 
           cat > README.md <<'MD'
           # Star Breach Warband Builder
@@ -161,10 +158,6 @@ jobs:
               require(old not in index + app, f'legacy runtime reference remains: {old}')
 
           subprocess.run(['node', '--check', str(ui_js)], check=True)
-
-          # Syntax-check the small loader inline script. The 500KB legacy app contains
-          # inline HTML/template strings that are not safely extractable with a generic
-          # HTML parser, so app.html is checked structurally here instead.
           start = index.index('<script>') + len('<script>')
           end = index.index('</script>', start)
           with tempfile.NamedTemporaryFile('w', suffix='.js', encoding='utf-8', delete=False) as fh:
@@ -174,40 +167,15 @@ jobs:
           print('Star Breach smoke checks passed.')
           PY
 
-          cat > .github/workflows/smoke.yml <<'YML'
-          name: Star Breach smoke checks
-
-          on:
-            push:
-              branches: [main]
-            pull_request:
-              branches: [main]
-
-          permissions:
-            contents: read
-
-          jobs:
-            smoke:
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                - uses: actions/setup-node@v4
-                  with:
-                    node-version: '22'
-                - name: Run structural and JavaScript syntax checks
-                  run: python scripts/smoke_test.py
-          YML
-
       - name: Verify consolidated build
         run: python scripts/smoke_test.py
 
-      - name: Commit cleanup
+      - name: Commit non-workflow cleanup
         shell: bash
         run: |
           set -euo pipefail
-          rm -f .github/workflows/cleanup-project.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add -A -- ':!.github/workflows'
           git commit -m 'Consolidate builder runtime and remove legacy patch chain'
           git push
