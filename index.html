@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Star Breach Warband Builder — v0.13.1</title><style>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Star Breach Warband Builder — v0.13.2</title><style>
 :root{
  --bg:#051014;--panel:#0b1921;--panel2:#102b38;--panel3:#07151c;--ink:#eefcfb;--muted:#acc4c8;
  --line:#28536a;--line2:#39718a;--green:#36d399;--green2:#1fa873;--blue:#55a8ff;--blue2:#2f7fd3;--cyan:#55d9e5;--teal:#38cbb3;
@@ -256,9 +256,9 @@ body.breach-mode .breach-unit{--role:var(--sb-breach-strong)}body.breach-mode .b
 @media(max-width:720px){.theme-slider{grid-template-columns:76px minmax(0,1fr) 38px}.theme-panel-head{display:grid}.theme-panel-head span{max-width:none}}
 @media print{.theme-panel,.theme-toggle{display:none!important}}
 
-</style></head><body>
+</style><link rel="stylesheet" href="v0132-fix.css"></head><body>
 <header class="top-shell" id="topShell">
- <div class="brand-row"><h1>STAR BREACH // WARBAND BUILDER</h1><small>unofficial prototype v0.13.1 • 1st Ed. errata PDF</small></div>
+ <div class="brand-row"><h1>STAR BREACH // WARBAND BUILDER</h1><small>unofficial prototype v0.13.2 • 1st Ed. errata PDF</small></div>
  <div class="warband-dock"><div class="dock-main"><div class="dock-id"><div class="dock-name" id="dockName">Untitled Warband</div><div class="dock-faction" id="dockFaction"></div></div><div class="dock-metrics"><span class="dock-chip"><b id="dockTotal">0</b>/<span id="dockLimit">120</span> UC</span><span class="dock-chip secondary">Remain <b id="dockRemaining">120</b></span><span class="dock-chip secondary">Spec <b id="dockSpec">0/48</b></span><button class="dock-chip good" id="dockIssues">✓ Ready</button><button class="dock-toggle" id="toggleDock">Minimize</button></div></div><div class="dock-extra"><span>STATUS</span><span class="issue-text" id="dockIssueText">Ready.</span></div></div>
 </header>
 <main>
@@ -485,4 +485,4 @@ function loadSnapshot(s){if(!s||!s.roster)throw Error('Not a Star Breach roster 
 $('saveLocal').onclick=()=>{localStorage.setItem('starbreach-roster',JSON.stringify(snapshot()));alert('Roster saved in this browser.')};$('loadLocal').onclick=()=>{const s=localStorage.getItem('starbreach-roster');if(!s)return alert('No locally saved roster found.');loadSnapshot(JSON.parse(s))};
 function download(name,obj){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}$('exportRoster').onclick=()=>download((($('teamName').value||'warband').replace(/[^a-z0-9]+/gi,'_'))+'.json',snapshot());$('importRoster').onchange=async ev=>{try{loadSnapshot(JSON.parse(await ev.target.files[0].text()))}catch(e){alert(e.message)}};$('importReference').onchange=async ev=>{try{const n=JSON.parse(await ev.target.files[0].text());if(!n.factions)throw Error('Reference JSON has no factions array.');REF=n;roster=[];pathMode='peace';populate();resetForFaction()}catch(e){alert('Could not load reference: '+e.message)}};
 loadTheme();bindThemeControls();populate();resetForFaction();setBreachMode(location.hash==='#breach');
-</script></body></html>
+</script><script src="v0132-fix.js"></script></body></html>
