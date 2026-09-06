@@ -28,7 +28,7 @@ jobs:
           from pathlib import Path
           s=Path('index.html').read_text(encoding='utf-8')
           a=s.index('</script><script>')+len('</script><script>')
-          b=s.rindex('</script></body>')
+          b=s.index('</script>',a)
           Path('/tmp/check.js').write_text(s[a:b],encoding='utf-8')
           PY
           node --check /tmp/check.js
