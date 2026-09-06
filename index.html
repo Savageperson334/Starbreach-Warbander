@@ -23,7 +23,8 @@
         let html=await r.text();
         html=html
           .replace('v0132-fix.css"',`v0132-fix.css?fresh=${stamp}"`)
-          .replace('v0132-fix.js"',`v0132-fix.js?fresh=${stamp}"`);
+          .replace('v0132-fix.js"',`v0132-fix.js?fresh=${stamp}"`)
+          .replace('</body>',`<script src="v0136-roster-add.js?fresh=${stamp}"><\/script></body>`);
         document.open();
         document.write(html);
         document.close();
