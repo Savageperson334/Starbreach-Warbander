@@ -22,9 +22,8 @@
         if(!r.ok) throw new Error(`HTTP ${r.status}`);
         let html=await r.text();
         html=html
-          .replace('v0132-fix.css"',`v0132-fix.css?fresh=${stamp}"`)
-          .replace('v0132-fix.js"',`v0132-fix.js?fresh=${stamp}"`)
-          .replace('</body>',`<script src="v0136-roster-add.js?fresh=${stamp}"><\/script><script src="v0137-breach-guide.js?fresh=${stamp}"><\/script><script src="v0138-breach-guide-bottom.js?fresh=${stamp}"><\/script></body>`);
+          .replace('starbreach-ui.css"',`starbreach-ui.css?fresh=${stamp}"`)
+          .replace('starbreach-ui.js"',`starbreach-ui.js?fresh=${stamp}"`);
         document.open();
         document.write(html);
         document.close();
