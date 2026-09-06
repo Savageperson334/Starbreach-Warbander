@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - index.html
-      - scripts/make_desktop.py
+      - scripts/make_desktop_v2.py
       - .github/workflows/build-desktop.yml
   workflow_dispatch:
 
@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Generate desktop.html
-        run: python scripts/make_desktop.py
+        run: python scripts/make_desktop_v2.py
       - name: Commit desktop page
         run: |
           git config user.name "github-actions[bot]"
