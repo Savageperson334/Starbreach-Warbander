@@ -24,7 +24,7 @@
         html=html
           .replace('v0132-fix.css"',`v0132-fix.css?fresh=${stamp}"`)
           .replace('v0132-fix.js"',`v0132-fix.js?fresh=${stamp}"`)
-          .replace('</body>',`<script src="v0136-roster-add.js?fresh=${stamp}"><\/script><script src="v0137-breach-guide.js?fresh=${stamp}"><\/script></body>`);
+          .replace('</body>',`<script src="v0136-roster-add.js?fresh=${stamp}"><\/script><script src="v0137-breach-guide.js?fresh=${stamp}"><\/script><script src="v0138-breach-guide-bottom.js?fresh=${stamp}"><\/script></body>`);
         document.open();
         document.write(html);
         document.close();
